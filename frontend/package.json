@@ -1,0 +1,12 @@
+{
+  "name": "portfolio-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc -p tsconfig.json && mkdir -p dist/assets && cp static/index.html dist/index.html && cp static/styles.css dist/assets/styles.css"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}

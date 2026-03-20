@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "lib": ["DOM", "ES2022"],
+    "noEmitOnError": true,
+    "rootDir": "src",
+    "outDir": "dist/assets"
+  },
+  "include": ["src/**/*.ts"]
+}

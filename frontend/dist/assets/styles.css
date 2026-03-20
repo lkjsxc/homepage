@@ -1,0 +1,70 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, "Segoe UI", Roboto, sans-serif;
+  background: #101418;
+  color: #ecf2f8;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.container {
+  width: min(960px, 92vw);
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+.job-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+input,
+button {
+  border: 1px solid #2f3c49;
+  border-radius: 0.5rem;
+  background: #18212a;
+  color: inherit;
+  padding: 0.6rem;
+}
+
+button {
+  align-self: end;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.jobs {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.job-card {
+  padding: 0.9rem;
+  border: 1px solid #2f3c49;
+  border-radius: 0.75rem;
+  background: #111a23;
+  line-height: 1.5;
+}
+
+.status {
+  color: #7ed7c1;
+}
+
+.error {
+  min-height: 1.2rem;
+  color: #ff9f9f;
+}
