@@ -1,36 +1,15 @@
-# Documentation Index (LLM)
+# Documentation TOC
 
-Authoritative specification for this repository. If any other document or code comment conflicts with this tree, this tree wins.
+This tree is the source of truth for the rewritten stack.
 
-## Directory Tree
-- [spec/README.md](spec/README.md)
-- [runtime/README.md](runtime/README.md)
-- [build/README.md](build/README.md)
-- [content/README.md](content/README.md)
+## Sections
+- [Architecture](architecture/README.md)
+- [API](api/README.md)
+- [Frontend](frontend/README.md)
+- [Build](build/README.md)
+- [Operations](operations/README.md)
 
-## Top-Level Table of Contents
-- [Spec Overview](spec/overview.md)
-- [Architecture](spec/architecture/README.md)
-	- [Functional Pipeline](spec/architecture/pipeline.md)
-	- [Data Model](spec/architecture/data-model.md)
-- [HTTP Spec](spec/http/README.md)
-	- [Request Line](spec/http/request.md)
-	- [Routes and Responses](spec/http/responses.md)
-	- [Errors](spec/http/errors.md)
-- [Configuration](spec/config/README.md)
-	- [Variables](spec/config/variables.md)
-	- [Validation](spec/config/validation.md)
-- [Runtime Lifecycle](runtime/lifecycle.md)
-- [Runtime IO](runtime/io/README.md)
-	- [Timeouts](runtime/io/timeouts.md)
-	- [Limits](runtime/io/limits.md)
-- [Container Build](build/container/README.md)
-	- [Image Layout](build/container/image.md)
-	- [Runtime Notes](build/container/runtime.md)
-- [Local Build](build/local/README.md)
-	- [Compile](build/local/compile.md)
-	- [Run](build/local/run.md)
-- [HTML Content](content/html/README.md)
-	- [Contract](content/html/contract.md)
-- [Assets and Embedding](content/assets/README.md)
-	- [Embedding Rules](content/assets/embedding.md)
+## Structure Rules
+- Every directory in `docs/` has exactly one `README.md`.
+- Each directory contains multiple child directories or multiple `.md` files.
+- Each markdown file stays below 300 lines.
