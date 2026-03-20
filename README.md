@@ -1,41 +1,38 @@
-# Portfolio HTTP Server
+# Portfolio Service (Rust + Actix + TypeScript)
 
-Single-process HTTP server that serves one static HTML file at `/`.
+This repository is a docs-first rewrite of the previous C server.
 
-## Highlights
-- Serves a configured HTML file from memory.
-- Handles `GET` and `HEAD` requests.
-- Routes: `/` only.
-- Defaults: `PORT=8080`, `CONTENT_PATH=/main.html`.
+## Stack
+- Rust + `actix-web` backend
+- Browser TypeScript frontend (transpiled at build time)
+- Docker multi-stage build
 
-## Quick start (local)
-1. Compile:
+## Features
+- Async job creation and progress tracking
+- Deterministic job result generation
+- Health endpoint
+- Static asset serving from Actix runtime
 
-   ```sh
-   gcc -O2 -pthread -o main src/*.c
-   ```
+## API
+- `GET /api/v1/health`
+- `POST /api/v1/jobs`
+- `GET /api/v1/jobs`
+- `GET /api/v1/jobs/{id}`
 
-2. Run (use a relative content path for local runs):
+## Local quick start
+```sh
+cargo run
+```
 
-   ```sh
-   CONTENT_PATH=main.html ./main
-   ```
+Then open `http://localhost:8080`.
 
-## Configuration
-- `PORT`: TCP port to bind (default `8080`).
-- `CONTENT_PATH`: Path to the HTML file (default `/main.html`).
-- `IO_TIMEOUT_SECONDS`: Socket send/receive timeout in seconds (default `5`).
-- `ASYNC_WORKERS`: Worker thread count for async processing (default `4`).
-- `ASYNC_QUEUE_SIZE`: Dispatch queue capacity for async processing (default `128`).
+## Docker compose verification
+```sh
+docker compose build --no-cache checks portfolio
+docker compose run --rm checks
+docker compose up -d portfolio
+curl -fsS http://localhost:8080/api/v1/health
+```
 
-## Docs
-- Full documentation index: [docs/README.md](docs/README.md)
-- Build and run (local): [docs/build/local/README.md](docs/build/local/README.md)
-- Container notes: [docs/build/container/README.md](docs/build/container/README.md)
-- Specification overview: [docs/spec/overview.md](docs/spec/overview.md)
-
-## Content
-- Default HTML asset: [main.html](main.html)
-
-## License
-See [LICENSE](LICENSE).
+## Documentation
+- Root docs TOC: [docs/README.md](docs/README.md)

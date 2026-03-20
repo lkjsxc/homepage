@@ -1,9 +1,17 @@
 services:
+  checks:
+    build:
+      context: .
+      target: checks
   portfolio:
-    container_name: portfolio
-    build: .
-    networks:
-      - nginx
-networks:
-  nginx:
-    external: true
+    build:
+      context: .
+      target: runtime
+    ports:
+      - "8080:8080"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8080"
+      JOB_MAX_STEPS: "4096"
+      JOB_TICK_MS: "20"
+      FRONTEND_DIR: "/app/frontend"
