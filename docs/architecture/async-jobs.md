@@ -1,5 +1,7 @@
 # Async Job Pipeline
 
+This pipeline documents supporting API behavior and is not the primary homepage UX.
+
 ## Flow
 1. Client creates a job with `POST /api/v1/jobs`.
 2. Server persists an initial snapshot in concurrent state.

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const api_js_1 = require("./api.js");
-const POLL_MS = 500;
+const content_js_1 = require("./content.js");
+const FEATURED_PROJECT_COUNT = 5;
 const byId = (id) => {
     const node = document.getElementById(id);
     if (!node) {
@@ -9,61 +9,85 @@ const byId = (id) => {
     }
     return node;
 };
-const form = byId("job-form");
-const labelInput = byId("label");
-const stepsInput = byId("steps");
-const seedInput = byId("seed");
-const errorBox = byId("error");
-const jobsList = byId("jobs");
-let timer = null;
-const renderJob = (job) => {
-    const result = job.result ? `<code>${job.result}</code>` : "<em>pending</em>";
-    return [
-        `<strong>${job.label}</strong> <span class="status">${job.status}</span>`,
-        `<span>${job.message}</span>`,
-        `<span>${job.progress}% (${job.steps} steps)</span>`,
-        `<span>result: ${result}</span>`,
-    ].join("<br>");
+const textElement = (tag, className, text) => {
+    const element = document.createElement(tag);
+    element.className = className;
+    element.textContent = text;
+    return element;
 };
-const renderJobs = (jobs) => {
-    jobsList.innerHTML = jobs
-        .map((job) => `<li class="job-card">${renderJob(job)}</li>`)
-        .join("");
+const anchor = (label, url) => {
+    const link = document.createElement("a");
+    link.className = "text-link";
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+    link.textContent = label;
+    return link;
 };
-const schedulePoll = () => {
-    if (timer !== null) {
-        return;
-    }
-    timer = window.setTimeout(async () => {
-        timer = null;
-        await refreshJobs();
-    }, POLL_MS);
+const renderProfile = (profile) => {
+    const section = document.createElement("section");
+    section.className = "section profile";
+    section.append(textElement("p", "eyebrow", "Portfolio"), textElement("h1", "profile-name", profile.name), textElement("h2", "profile-headline", profile.headline), textElement("p", "profile-summary", profile.summary), textElement("p", "profile-location", profile.location));
+    return section;
 };
-const refreshJobs = async () => {
-    const jobs = await (0, api_js_1.listJobs)();
-    renderJobs(jobs);
-    if (jobs.some((job) => job.status === "queued" || job.status === "running")) {
-        schedulePoll();
+const renderProjectCard = (project) => {
+    const card = document.createElement("article");
+    card.className = "project-card";
+    card.append(textElement("h3", "project-name", project.name), textElement("p", "project-description", project.description));
+    const tags = document.createElement("ul");
+    tags.className = "tag-list";
+    project.tags.forEach((tag) => {
+        const item = document.createElement("li");
+        item.className = "tag";
+        item.textContent = tag;
+        tags.append(item);
+    });
+    card.append(tags);
+    const links = document.createElement("div");
+    links.className = "project-links";
+    if (project.repositoryUrl) {
+        links.append(anchor("Repository", project.repositoryUrl));
     }
+    if (project.liveUrl) {
+        links.append(anchor("Live demo", project.liveUrl));
+    }
+    if (links.childElementCount > 0) {
+        card.append(links);
+    }
+    return card;
 };
-form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    errorBox.textContent = "";
-    const label = labelInput.value;
-    const steps = Number.parseInt(stepsInput.value, 10);
-    const seed = seedInput.value.trim();
-    try {
-        await (0, api_js_1.createJob)({
-            label,
-            steps,
-            seed: seed.length > 0 ? seed : undefined,
-        });
-        form.reset();
-        await refreshJobs();
+const renderProjects = (projects) => {
+    if (projects.length !== FEATURED_PROJECT_COUNT) {
+        throw new Error(`expected ${FEATURED_PROJECT_COUNT} featured projects`);
     }
-    catch (error) {
-        const message = error instanceof Error ? error.message : "unknown client error";
-        errorBox.textContent = message;
-    }
-});
-void refreshJobs();
+    const section = document.createElement("section");
+    section.className = "section projects";
+    section.append(textElement("h2", "section-title", "Featured projects"));
+    const grid = document.createElement("div");
+    grid.className = "projects-grid";
+    projects.forEach((project) => {
+        grid.append(renderProjectCard(project));
+    });
+    section.append(grid);
+    return section;
+};
+const renderSocialLinks = (socialLinks) => {
+    const section = document.createElement("section");
+    section.className = "section socials";
+    section.append(textElement("h2", "section-title", "Social links"));
+    const list = document.createElement("ul");
+    list.className = "social-list";
+    socialLinks.forEach((social) => {
+        const item = document.createElement("li");
+        item.className = "social-item";
+        item.append(anchor(social.label, social.url));
+        list.append(item);
+    });
+    section.append(list);
+    return section;
+};
+const renderHomepage = () => {
+    const appRoot = byId("app");
+    appRoot.replaceChildren(renderProfile(content_js_1.portfolioContent.profile), renderProjects(content_js_1.portfolioContent.featuredProjects), renderSocialLinks(content_js_1.portfolioContent.socialLinks));
+};
+renderHomepage();

@@ -3,30 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio Async Jobs</title>
+    <title>Luca K. · Portfolio</title>
     <link rel="stylesheet" href="/assets/styles.css" />
   </head>
   <body>
     <main class="container">
-      <h1>Portfolio Async Job Console</h1>
-      <p>Rust + Actix runtime with browser-side TypeScript.</p>
-      <form id="job-form" class="job-form">
-        <label>
-          Label
-          <input id="label" required maxlength="64" value="demo-job" />
-        </label>
-        <label>
-          Steps
-          <input id="steps" type="number" min="1" max="4096" value="64" required />
-        </label>
-        <label>
-          Seed (optional)
-          <input id="seed" maxlength="128" />
-        </label>
-        <button type="submit">Create Job</button>
-      </form>
-      <p id="error" class="error"></p>
-      <ul id="jobs" class="jobs"></ul>
+      <div id="app"></div>
+      <noscript>
+        <p>This portfolio page requires JavaScript enabled in your browser.</p>
+      </noscript>
     </main>
     <script type="module" src="/assets/app.js"></script>
   </body>

@@ -3,7 +3,7 @@ import type {
   JobCreateRequest,
   JobCreateResponse,
   JobSnapshot,
-} from "./types.js";
+} from "./job-types.js";
 
 const JSON_HEADERS = { "Content-Type": "application/json" } as const;
 

@@ -1,7 +1,7 @@
-import { createJob, listJobs } from "./api.js";
-import type { JobSnapshot } from "./types.js";
+import { portfolioContent } from "./content.js";
+import type { FeaturedProject, PortfolioProfile, SocialLink } from "./types.js";
 
-const POLL_MS = 500;
+const FEATURED_PROJECT_COUNT = 5;
 
 const byId = <T extends HTMLElement>(id: string): T => {
   const node = document.getElementById(id);
@@ -11,69 +11,115 @@ const byId = <T extends HTMLElement>(id: string): T => {
   return node as T;
 };
 
-const form = byId<HTMLFormElement>("job-form");
-const labelInput = byId<HTMLInputElement>("label");
-const stepsInput = byId<HTMLInputElement>("steps");
-const seedInput = byId<HTMLInputElement>("seed");
-const errorBox = byId<HTMLParagraphElement>("error");
-const jobsList = byId<HTMLUListElement>("jobs");
-
-let timer: number | null = null;
-
-const renderJob = (job: JobSnapshot): string => {
-  const result = job.result ? `<code>${job.result}</code>` : "<em>pending</em>";
-  return [
-    `<strong>${job.label}</strong> <span class="status">${job.status}</span>`,
-    `<span>${job.message}</span>`,
-    `<span>${job.progress}% (${job.steps} steps)</span>`,
-    `<span>result: ${result}</span>`,
-  ].join("<br>");
+const textElement = <T extends keyof HTMLElementTagNameMap>(
+  tag: T,
+  className: string,
+  text: string,
+): HTMLElementTagNameMap[T] => {
+  const element = document.createElement(tag);
+  element.className = className;
+  element.textContent = text;
+  return element;
 };
 
-const renderJobs = (jobs: JobSnapshot[]): void => {
-  jobsList.innerHTML = jobs
-    .map((job) => `<li class="job-card">${renderJob(job)}</li>`)
-    .join("");
+const anchor = (label: string, url: string): HTMLAnchorElement => {
+  const link = document.createElement("a");
+  link.className = "text-link";
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noreferrer";
+  link.textContent = label;
+  return link;
 };
 
-const schedulePoll = (): void => {
-  if (timer !== null) {
-    return;
+const renderProfile = (profile: PortfolioProfile): HTMLElement => {
+  const section = document.createElement("section");
+  section.className = "section profile";
+  section.append(
+    textElement("p", "eyebrow", "Portfolio"),
+    textElement("h1", "profile-name", profile.name),
+    textElement("h2", "profile-headline", profile.headline),
+    textElement("p", "profile-summary", profile.summary),
+    textElement("p", "profile-location", profile.location),
+  );
+  return section;
+};
+
+const renderProjectCard = (project: FeaturedProject): HTMLElement => {
+  const card = document.createElement("article");
+  card.className = "project-card";
+  card.append(
+    textElement("h3", "project-name", project.name),
+    textElement("p", "project-description", project.description),
+  );
+
+  const tags = document.createElement("ul");
+  tags.className = "tag-list";
+  project.tags.forEach((tag) => {
+    const item = document.createElement("li");
+    item.className = "tag";
+    item.textContent = tag;
+    tags.append(item);
+  });
+  card.append(tags);
+
+  const links = document.createElement("div");
+  links.className = "project-links";
+  if (project.repositoryUrl) {
+    links.append(anchor("Repository", project.repositoryUrl));
   }
-  timer = window.setTimeout(async () => {
-    timer = null;
-    await refreshJobs();
-  }, POLL_MS);
+  if (project.liveUrl) {
+    links.append(anchor("Live demo", project.liveUrl));
+  }
+  if (links.childElementCount > 0) {
+    card.append(links);
+  }
+
+  return card;
 };
 
-const refreshJobs = async (): Promise<void> => {
-  const jobs = await listJobs();
-  renderJobs(jobs);
-  if (jobs.some((job) => job.status === "queued" || job.status === "running")) {
-    schedulePoll();
+const renderProjects = (projects: readonly FeaturedProject[]): HTMLElement => {
+  if (projects.length !== FEATURED_PROJECT_COUNT) {
+    throw new Error(`expected ${FEATURED_PROJECT_COUNT} featured projects`);
   }
+
+  const section = document.createElement("section");
+  section.className = "section projects";
+  section.append(textElement("h2", "section-title", "Featured projects"));
+
+  const grid = document.createElement("div");
+  grid.className = "projects-grid";
+  projects.forEach((project) => {
+    grid.append(renderProjectCard(project));
+  });
+  section.append(grid);
+  return section;
 };
 
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  errorBox.textContent = "";
+const renderSocialLinks = (socialLinks: readonly SocialLink[]): HTMLElement => {
+  const section = document.createElement("section");
+  section.className = "section socials";
+  section.append(textElement("h2", "section-title", "Social links"));
 
-  const label = labelInput.value;
-  const steps = Number.parseInt(stepsInput.value, 10);
-  const seed = seedInput.value.trim();
+  const list = document.createElement("ul");
+  list.className = "social-list";
+  socialLinks.forEach((social) => {
+    const item = document.createElement("li");
+    item.className = "social-item";
+    item.append(anchor(social.label, social.url));
+    list.append(item);
+  });
+  section.append(list);
+  return section;
+};
 
-  try {
-    await createJob({
-      label,
-      steps,
-      seed: seed.length > 0 ? seed : undefined,
-    });
-    form.reset();
-    await refreshJobs();
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "unknown client error";
-    errorBox.textContent = message;
-  }
-});
+const renderHomepage = (): void => {
+  const appRoot = byId<HTMLElement>("app");
+  appRoot.replaceChildren(
+    renderProfile(portfolioContent.profile),
+    renderProjects(portfolioContent.featuredProjects),
+    renderSocialLinks(portfolioContent.socialLinks),
+  );
+};
 
-void refreshJobs();
+renderHomepage();

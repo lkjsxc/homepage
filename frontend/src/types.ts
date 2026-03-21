@@ -1,26 +1,37 @@
-export type JobStatus = "queued" | "running" | "completed" | "failed";
+export interface PortfolioProfile {
+  name: string;
+  headline: string;
+  summary: string;
+  location: string;
+}
 
-export interface JobSnapshot {
-  id: string;
+export interface FeaturedProject {
+  slug: string;
+  name: string;
+  description: string;
+  tags: readonly string[];
+  repositoryUrl?: string;
+  liveUrl?: string;
+}
+
+export type FeaturedProjects = readonly [
+  FeaturedProject,
+  FeaturedProject,
+  FeaturedProject,
+  FeaturedProject,
+  FeaturedProject,
+];
+
+export type SocialPlatform = "github" | "linkedin" | "email" | "x" | "website";
+
+export interface SocialLink {
+  platform: SocialPlatform;
   label: string;
-  status: JobStatus;
-  progress: number;
-  steps: number;
-  message: string;
-  result: string | null;
+  url: string;
 }
 
-export interface JobCreateRequest {
-  label: string;
-  steps: number;
-  seed?: string;
-}
-
-export interface JobCreateResponse {
-  jobId: string;
-}
-
-export interface ErrorEnvelope {
-  code: string;
-  message: string;
+export interface PortfolioContent {
+  profile: PortfolioProfile;
+  featuredProjects: FeaturedProjects;
+  socialLinks: readonly SocialLink[];
 }

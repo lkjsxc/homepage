@@ -1,23 +1,25 @@
 # Portfolio Service (Rust + Actix + TypeScript)
 
-This repository is a docs-first rewrite of the previous C server.
+This repository is a docs-first rewrite of the previous C server, now centered on a portfolio showcase homepage.
 
 ## Stack
 - Rust + `actix-web` backend
 - Browser TypeScript frontend (transpiled at build time)
 - Docker multi-stage build
 
-## Features
-- Async job creation and progress tracking
-- Deterministic job result generation
-- Health endpoint
+## Homepage Focus
+- Profile section (name, headline, summary, location)
+- Exactly 5 featured project cards
+- Social links section
 - Static asset serving from Actix runtime
 
-## API
+## Supporting API
 - `GET /api/v1/health`
 - `POST /api/v1/jobs`
 - `GET /api/v1/jobs`
 - `GET /api/v1/jobs/{id}`
+
+Async job endpoints remain available as supporting backend capabilities, but the primary UI at `/` is the portfolio homepage.
 
 ## Local quick start
 ```sh
